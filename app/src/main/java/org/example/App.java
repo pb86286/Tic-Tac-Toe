@@ -7,12 +7,20 @@ public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean playAgain;
+        GameLog gameLog = new GameLog();
 
         System.out.println("Welcome to Tic-Tac-Toe!");
 
+        String currentPlayer = "X"; // track who goes first
+        String lastLoser = null;    // track for loser-goes-first
+
         do {
             Board board = new Board();
-            String currentPlayer = "X";
+
+            if (lastLoser != null) {
+                currentPlayer = lastLoser;
+                System.out.println("\nGreat! This time " + currentPlayer + " will go first!");
+            }
 
             while (true) {
                 board.display();
@@ -33,17 +41,23 @@ public class App {
                 if (board.checkWin(currentPlayer)) {
                     board.display();
                     System.out.println("\nPlayer " + currentPlayer + " wins!");
+                    gameLog.recordWin(currentPlayer);
+                    lastLoser = currentPlayer.equals("X") ? "O" : "X"; // loser goes first
                     break;
                 }
 
                 if (board.isDraw()) {
                     board.display();
                     System.out.println("\nIt's a draw!");
+                    gameLog.recordTie();
+                    lastLoser = null; 
                     break;
                 }
 
                 currentPlayer = currentPlayer.equals("X") ? "O" : "X";
             }
+
+            gameLog.display();
 
             // Ask to play again
             while (true) {
@@ -54,7 +68,11 @@ public class App {
                     break;
                 } else if (answer.equals("no")) {
                     playAgain = false;
-                    System.out.println("\nGoodbye!");
+                    System.out.println("\nFinal Game Log:");
+                    gameLog.display();
+                    System.out.println("\nWriting the game log to disk as 'game.txt'...");
+                    gameLog.saveToFile("game.txt");
+                    System.out.println("Goodbye!");
                     break;
                 } else {
                     System.out.println("\nThat is not a valid entry!");
