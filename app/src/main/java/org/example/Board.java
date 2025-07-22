@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Board {
     private final String[] cells;
 
@@ -61,4 +64,22 @@ public class Board {
         }
         return true;
     }
+
+public List<Integer> getAvailableMoves() {
+    List<Integer> moves = new ArrayList<>();
+    for (int i = 0; i < 9; i++) {
+        if (!cells[i].equals("X") && !cells[i].equals("O")) {
+            moves.add(i + 1);
+        }
+    }
+    return moves;
+}
+
+public Board clone() {
+    Board newBoard = new Board();
+    for (int i = 0; i < 9; i++) {
+        newBoard.cells[i] = this.cells[i];
+    }
+    return newBoard;
+}
 }
